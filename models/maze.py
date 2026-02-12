@@ -1,4 +1,5 @@
 from models.cell import Cell
+import curses
 
 
 class Maze():
@@ -55,3 +56,34 @@ class Maze():
 
     def reset_visited(self):
         pass
+
+    def display(self):
+        def draw_maze(stdscr):
+            curses.curs_set(0)
+            stdscr.clear()
+
+            for r, row in enumerate(self.grid):
+                line_top = ""
+                line_mid = ""
+
+                for c, cell in enumerate(row):
+                    if (cell.north or (c > 0 and row[c-1].north)):
+                        line_top += "██"
+                    else:
+                        "██"
+
+                    line_top += "██" if cell.north else "  "
+
+                    line_mid += "██" if cell.west else "  "
+
+                    line_mid += "  "
+                line_top += "██"
+                line_mid += "██"
+                stdscr.addstr(r * 2, 0, line_top)
+                stdscr.addstr(r * 2 + 1, 0, line_mid)
+            bottom_border = "██" * (len(self.grid[0]) * 2 + 1)
+            stdscr.addstr(len(self.grid) * 2, 0, bottom_border)
+            stdscr.refresh()
+            stdscr.getch()
+
+        curses.wrapper(draw_maze)
