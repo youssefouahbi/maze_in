@@ -87,3 +87,4 @@ class Maze():
             stdscr.getch()
 
         curses.wrapper(draw_maze)
+
