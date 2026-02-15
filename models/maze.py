@@ -26,7 +26,7 @@ class Maze():
 
     def get_neighbors(self, cell, visited_only=False):
         neighbors = []
-        r = cell.row
+        r = cell.row 
         c = cell.col
 
         # North
@@ -55,35 +55,65 @@ class Maze():
         return neighbors
 
     def reset_visited(self):
-        pass
+        for row in self.grid:
+            for cell in row:
+                cell.visited = False
 
     def display(self):
         def draw_maze(stdscr):
             curses.curs_set(0)
-            stdscr.clear()
 
-            for r, row in enumerate(self.grid):
-                line_top = ""
-                line_mid = ""
+            h = self.height
+            w = self.width
 
-                for c, cell in enumerate(row):
-                    if (cell.north or (c > 0 and row[c-1].north)):
-                        line_top += "██"
-                    else:
-                        "██"
+            needed_h = 2*h + 1
+            needed_w = 4*w + 2
+     
+            max_h , max_w = stdscr.getmaxyx()
 
-                    line_top += "██" if cell.north else "  "
+            if needed_h > max_h or needed_w > max_w:
+                stdscr.addstr(0, 0, "Fenêtre trop petite pour afficher le labyrinthe !")
+                stdscr.addstr(1, 0, f"Taille requise: {needed_h}x{needed_w}")
+                stdscr.addstr(2, 0, f"Taille écran:  {max_h}x{max_w}")
+                stdscr.refresh()
+                stdscr.getch()
+                return
+            
+            # Mur du haut
+                
+            top = "██" * (w * 2 + 1)
+            stdscr.addstr(0, 0, top)
 
-                    line_mid += "██" if cell.west else "  "
 
+            for r in range(h):
+                line_mid = "██"   # mur gauche
+                line_bot = "██"   # coin gauche bas
+
+                for c in range(w):
+                    cell = self.grid[r][c]
+
+                    # Intérieur cellule
                     line_mid += "  "
-                line_top += "██"
-                line_mid += "██"
-                stdscr.addstr(r * 2, 0, line_top)
+
+                    # Mur est
+                    if cell.east:
+                        line_mid += "██"
+                    else:
+                        line_mid += "  "
+
+                    # Mur sud
+                    if cell.south:
+                        line_bot += "██"
+                    else:
+                        line_bot += "  "
+
+                    # Coin
+                    line_bot += "██"
+
                 stdscr.addstr(r * 2 + 1, 0, line_mid)
-            bottom_border = "██" * (len(self.grid[0]) * 2 + 1)
-            stdscr.addstr(len(self.grid) * 2, 0, bottom_border)
+                stdscr.addstr(r * 2 + 2, 0, line_bot)
+
             stdscr.refresh()
             stdscr.getch()
-
+        
         curses.wrapper(draw_maze)

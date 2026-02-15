@@ -1,12 +1,30 @@
 from models.maze import Maze
 import curses
+from solver.dfs import DFSGenerator
+from config.parse import read_config
+import sys
 
 
 def main(stdscr):
-    curses.curs_set(0)  # hide the cursor
-    stdscr.clear()      # clear the screen
+    try:
+        config = read_config(sys.argv[1])
+    except Exception as e:
+        stdscr.addstr(0,0, f"Erreur config: {e}")
+        stdscr.refresh()
+        stdscr.getch()
+        return
+    maze = Maze(
+        config['WIDTH'],
+        config['HEIGHT'],
+        config['ENTRY'],
+        config['EXIT'],
+        config['PERFECT'])
+
+    dfs = DFSGenerator(maze)
+    dfs.apply_mask() # generation du 42 pattern
+    dfs.generate(0, 0)   # Génération du labyrinthe
+    maze.display()       # Affichage avec curses
 
 
 if __name__ == "__main__":
-    maze = Maze(10, 10, 0, 0, True)
-    maze.display()
+    curses.wrapper(main)
