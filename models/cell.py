@@ -28,7 +28,7 @@ class Cell ():
         elif (wall == "east"):
             self.east = False
         elif (wall == "west"):
-            self.west = False 
+            self.west = False
 
     def mark_visited(self):
         self.visited = True

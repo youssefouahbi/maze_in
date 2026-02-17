@@ -21,7 +21,8 @@ def main(stdscr):
         config['PERFECT'])
 
     dfs = DFSGenerator(maze)
-    dfs.apply_mask() # generation du 42 pattern
+    dfs.set_seed(None)
+    dfs.apply_mask()   # generation du 42 pattern
     dfs.generate(0, 0)   # Génération du labyrinthe
     maze.display()       # Affichage avec curses
 

@@ -1,9 +1,9 @@
 import random
 
 class DFSGenerator:
-    #accéder aux cellules
-    #casser les murs
-    #demander les voisins
+    # accéder aux cellules
+    # casser les murs
+    # demander les voisins
     def __init__(self, maze):
         self.maze = maze
     
@@ -46,11 +46,12 @@ class DFSGenerator:
     def _dfs(self, cell):
         cell.visited = True # marquer comme visite
         neighbors = self.maze.get_neighbors(cell, visited_only=True) #recup les voisins non visite
+        
         random.shuffle(neighbors)
 
-        for (next_cell , direction) in neighbors: #travers les voisins
-            if not next_cell.visited :
-                self.__remove_wall(cell, next_cell,direction) # on casse le mure entre la cellul courant et le voisin
+        for (next_cell, direction) in neighbors:  # travers les voisins
+            if not next_cell.visited:
+                self.__remove_wall(cell, next_cell, direction) # on casse le mure entre la cellul courant et le voisin
                 self._dfs(next_cell) #On appelle récursivement DFS sur la cellule voisine, Le DFS continue d’avancer en profondeur jusqu’à être bloqué
     
     def __remove_wall(self, current, next_cell, direction): # casser le mure entre 2 cellules
@@ -66,13 +67,7 @@ class DFSGenerator:
         elif direction == "west":
             current.west = False
             next_cell.east = False
-
-"""
-0 0 0 0 0 0 0 0 0 0 0 0
-0 0 1 0 0 0 1 1 1 0 0 0
-0 0 1 0 0 0 0 0 1 0 0 0
-0 0 1 1 1 0 1 1 1 0 0 0
-0 0 0 0 1 0 1 0 0 0 0 0
-0 0 0 0 1 0 1 1 1 0 0 0
-0 0 0 0 0 0 0 0 0 0 0 0
-"""
+    
+    def set_seed(self, seed):
+        if seed:
+            random.seed(seed)

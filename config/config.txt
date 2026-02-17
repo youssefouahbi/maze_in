@@ -1,7 +1,7 @@
 # Maze configuration
 
-WIDTH=20
-HEIGHT=30
+WIDTH=15
+HEIGHT=15
 ENTRY=0,0
 EXIT=19,29
 PERFECT=True

@@ -25,7 +25,7 @@ def read_config(file_path):
                 if key in ['WIDTH', 'HEIGHT']:
                     try:
                         config[key] = int(value)
-                    except:
+                    except Exception:
                         raise ValueError(f"Ligne {line_num}: valeur de {key} doit être un entier: {value}")
 
                 elif key in ['ENTRY', 'EXIT']:
@@ -34,7 +34,7 @@ def read_config(file_path):
                         if len(coords) != 2:
                             raise ValueError
                         config[key] = coords
-                    except:
+                    except Exception:
                         raise ValueError(f"Ligne {line_num}: valeur de {key} doit être 'x,y': {value}")
 
                 elif key == 'PERFECT':
