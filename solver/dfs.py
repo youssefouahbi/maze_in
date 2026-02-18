@@ -1,5 +1,6 @@
 import random
 
+
 class DFSGenerator:
     # accéder aux cellules
     # casser les murs
@@ -37,27 +38,27 @@ class DFSGenerator:
                         cell = self.maze.grid[mr][mc]
                         cell.visited = True    
     
-    def generate(self, start_row = 0 , start_col = 0):
-        start = self.maze.get_cell(start_row, start_col) #recuper le cellul de depart
+    def generate(self, start_row=0, start_col=0):
+        start = self.maze.get_cell(start_row, start_col)       #recuper le cellul de depart
         if start.visited:
             return
-        self._dfs(start) # recursive
+        self._dfs(start)    # recursive
     
     def _dfs(self, cell):
-        cell.visited = True # marquer comme visite
+        cell.visited = True   # marquer comme visite
         neighbors = self.maze.get_neighbors(cell, visited_only=True) #recup les voisins non visite
         
         random.shuffle(neighbors)
 
         for (next_cell, direction) in neighbors:  # travers les voisins
             if not next_cell.visited:
-                self.__remove_wall(cell, next_cell, direction) # on casse le mure entre la cellul courant et le voisin
-                self._dfs(next_cell) #On appelle récursivement DFS sur la cellule voisine, Le DFS continue d’avancer en profondeur jusqu’à être bloqué
+                self.__remove_wall(cell, next_cell, direction)      # on casse le mure entre la cellul courant et le voisin
+                self._dfs(next_cell)         #On appelle récursivement DFS sur la cellule voisine, Le DFS continue d’avancer en profondeur jusqu’à être bloqué
     
-    def __remove_wall(self, current, next_cell, direction): # casser le mure entre 2 cellules
+    def __remove_wall(self, current, next_cell, direction):    # casser le mure entre 2 cellules
         if direction == "north":
             current.north = False
-            next_cell.south = False # on onleve nord du current et sud du next cellul, et le donc metre connecte
+            next_cell.south = False     # on onleve nord du current et sud du next cellul, et le donc metre connecte
         elif direction == "south":
             current.south = False
             next_cell.north = False

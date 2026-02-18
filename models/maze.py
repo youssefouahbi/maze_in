@@ -69,7 +69,7 @@ class Maze():
             needed_h = 2*h + 1
             needed_w = 4*w + 2
      
-            max_h , max_w = stdscr.getmaxyx()
+            max_h, max_w = stdscr.getmaxyx()
 
             if needed_h > max_h or needed_w > max_w:
                 stdscr.addstr(0, 0, "Fenêtre trop petite pour afficher le labyrinthe !")
