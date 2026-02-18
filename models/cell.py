@@ -9,6 +9,7 @@ class Cell ():
         self.east = east
         self.west = west
         self.visited = False
+        self.is_42 = False
 
     def has_wall(self, wall) -> bool:
         if (wall == "north"):

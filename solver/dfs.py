@@ -54,7 +54,7 @@ class DFSGenerator:
             if not next_cell.visited:
                 self.__remove_wall(cell, next_cell, direction)      # on casse le mure entre la cellul courant et le voisin
                 self._dfs(next_cell)         #On appelle récursivement DFS sur la cellule voisine, Le DFS continue d’avancer en profondeur jusqu’à être bloqué
-    
+
     def __remove_wall(self, current, next_cell, direction):    # casser le mure entre 2 cellules
         if direction == "north":
             current.north = False

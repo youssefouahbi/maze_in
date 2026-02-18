@@ -1,18 +1,15 @@
 from models.maze import Maze
-import curses
 from solver.dfs import DFSGenerator
 from config.parse import read_config
 import sys
+from solver.prim import PrimGenerator
 
 
-def main(stdscr):
+def main():
     try:
         config = read_config(sys.argv[1])
     except Exception as e:
-        stdscr.addstr(0,0, f"Erreur config: {e}")
-        stdscr.refresh()
-        stdscr.getch()
-        return
+        eror = f"Erreur config: {e}"
     maze = Maze(
         config['WIDTH'],
         config['HEIGHT'],
@@ -21,11 +18,23 @@ def main(stdscr):
         config['PERFECT'])
 
     dfs = DFSGenerator(maze)
-    dfs.set_seed(None)
-    dfs.apply_mask()   # generation du 42 pattern
-    dfs.generate(0, 0)   # Génération du labyrinthe
-    maze.display()       # Affichage avec curses
+    prim = PrimGenerator(maze)
+    # dfs.set_seed(None)
+    prim.apply_mask()
+    prim.generate(0, 0)
+    # Génération du labyrinthe
+    # maze.display()       # Affichage avec curses
+
+    while True:
+        clicked = maze.get_char()
+        if clicked == 49:
+            prim.generate(0, 0)
+        if clicked == 52:
+            break
+
+
+    maze.close()
 
 
 if __name__ == "__main__":
-    curses.wrapper(main)
+    main()
