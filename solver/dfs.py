@@ -1,5 +1,5 @@
 import random
-
+import time
 
 class DFSGenerator:
     # accéder aux cellules
@@ -9,6 +9,7 @@ class DFSGenerator:
         self.maze = maze
     
     def apply_mask(self):
+        self.maze.reset_maze()
         """
         mask = matrice de 0/1
         1 => cellule bloquée (déjà visitée)
@@ -38,22 +39,33 @@ class DFSGenerator:
                         cell = self.maze.grid[mr][mc]
                         cell.visited = True    
     
-    def generate(self, start_row=0, start_col=0):
-        start = self.maze.get_cell(start_row, start_col)       #recuper le cellul de depart
+    def generate(self, start_row=0, start_col=0, inperfect=None):
+        
+        start = self.maze.get_cell(start_row, start_col)
         if start.visited:
             return
-        self._dfs(start)    # recursive
-    
-    def _dfs(self, cell):
+        self._dfs(start, inperfect)
+
+    def _dfs(self, cell, inperfect):
         cell.visited = True   # marquer comme visite
         neighbors = self.maze.get_neighbors(cell, visited_only=True) #recup les voisins non visite
-        
+        self.maze.display()
+        time.sleep(.01)
         random.shuffle(neighbors)
 
-        for (next_cell, direction) in neighbors:  # travers les voisins
+        for (next_cell, direction) in neighbors:
             if not next_cell.visited:
-                self.__remove_wall(cell, next_cell, direction)      # on casse le mure entre la cellul courant et le voisin
-                self._dfs(next_cell)         #On appelle récursivement DFS sur la cellule voisine, Le DFS continue d’avancer en profondeur jusqu’à être bloqué
+                self.__remove_wall(cell, next_cell, direction)
+                self._dfs(next_cell, inperfect)
+
+        if inperfect:
+            random.shuffle(neighbors)
+            for (next_cell, direction) in neighbors:
+                if not next_cell.visited:
+                    self.__remove_wall(cell, next_cell, direction)
+                    self._dfs(next_cell, inperfect)
+            
+                
 
     def __remove_wall(self, current, next_cell, direction):    # casser le mure entre 2 cellules
         if direction == "north":

@@ -19,16 +19,15 @@ def main():
 
     dfs = DFSGenerator(maze)
     prim = PrimGenerator(maze)
-    # dfs.set_seed(None)
-    prim.apply_mask()
-    prim.generate(0, 0)
-    # Génération du labyrinthe
-    # maze.display()       # Affichage avec curses
+    dfs.set_seed(None)
+    dfs.apply_mask()
+    dfs.generate(0, 0, True)
 
     while True:
         clicked = maze.get_char()
         if clicked == 49:
-            prim.generate(0, 0)
+            dfs.apply_mask()
+            dfs.generate(0, 0)
         if clicked == 52:
             break
 
