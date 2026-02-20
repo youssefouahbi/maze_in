@@ -7,6 +7,7 @@ class DFSGenerator:
     # demander les voisins
     def __init__(self, maze):
         self.maze = maze
+        self.apply_mask()
     
     def apply_mask(self):
         self.maze.reset_maze()

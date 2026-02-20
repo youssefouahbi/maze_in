@@ -6,6 +6,7 @@ import time
 class PrimGenerator():
     def __init__(self, maze):
         self.maze = maze
+        self.apply_mask()
 
     def generate(self, start_row=0, start_col=0, inperfect=False):
         self.maze.reset_maze()

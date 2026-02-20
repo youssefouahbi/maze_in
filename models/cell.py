@@ -10,6 +10,7 @@ class Cell ():
         self.west = west
         self.visited = False
         self.is_42 = False
+        self.hex: str = "0123456789ABCDEF"
 
     def has_wall(self, wall) -> bool:
         if (wall == "north"):
@@ -33,3 +34,15 @@ class Cell ():
 
     def mark_visited(self):
         self.visited = True
+
+    def get_hex_value(self) -> str:
+        num = 0
+        if self.west:
+            num += 8
+        if self.north:
+            num += 1
+        if self.east:
+            num += 2
+        if self.south:
+            num += 4
+        return self.hex[num]

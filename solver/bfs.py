@@ -63,6 +63,7 @@
 from collections import deque
 import curses
 
+
 class BFS:
     def __init__(self, maze):
         self.maze = maze
@@ -134,26 +135,26 @@ class BFS:
 
         return neighbors
 
-    def display_path(self, path: list[tuple]):
+    def display_path(self):
         """
         Display the path in the maze using curses.
         """
-        if not path:
+        if not self.path:
             return
 
         curses.start_color()
         curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_YELLOW)
 
-        # Draw all cells in path
-        for r, c in path:
+        # Draw all cells in self.path
+        for r, c in self.path:
             y = r * 2 + 1
             x = c * 4 + 2
             self.maze.stdscr.addstr(y, x, "██", curses.color_pair(4))
 
         # Draw passages between cells
-        for i in range(len(path) - 1):
-            r1, c1 = path[i]
-            r2, c2 = path[i + 1]
+        for i in range(len(self.path) - 1):
+            r1, c1 = self.path[i]
+            r2, c2 = self.path[i + 1]
 
             mid_y = (r1 + r2) * 2 // 2 + 1
             mid_x = (c1 + c2) * 4 // 2 + 2
