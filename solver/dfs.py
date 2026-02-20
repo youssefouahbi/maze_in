@@ -37,8 +37,8 @@ class DFSGenerator:
                     mc = c + offset_c
                     if 0 <= mr < self.maze.height and 0 <= mc < self.maze.width:
                         cell = self.maze.grid[mr][mc]
-                        cell.visited = True    
-    
+                        cell.visited = True
+
     def generate(self, start_row=0, start_col=0, inperfect=None):
         
         start = self.maze.get_cell(start_row, start_col)
@@ -65,8 +65,7 @@ class DFSGenerator:
                     self.__remove_wall(cell, next_cell, direction)
                     self._dfs(next_cell, inperfect)
             
-                
-
+            
     def __remove_wall(self, current, next_cell, direction):    # casser le mure entre 2 cellules
         if direction == "north":
             current.north = False

@@ -7,14 +7,15 @@ class PrimGenerator():
     def __init__(self, maze):
         self.maze = maze
 
-    def generate(self, start_row=0, start_col=0):
+    def generate(self, start_row=0, start_col=0, inperfect=False):
         self.maze.reset_maze()
+
         start = self.maze.get_cell(start_row, start_col)
         if start.visited:
             return
-        self.prim(start)
+        self.prim(start, inperfect)
 
-    def prim(self, start, inperfect=False):
+    def prim(self, start, inperfect=None):
         # list for adding invisited the neighbers each time
         frontier = []
 
@@ -54,13 +55,13 @@ class PrimGenerator():
                 neighbor, direction = new_cell
                 self.__remove_wall(cell, neighbor, direction)
                 self.maze.display()
-                time.sleep(.05)
+                time.sleep(.01)
 
             # to make it inperfect by opening new cell instead of one
-            if (inperfect and random.random() < .7 and len(visited_cell_only) >= 3):
+            if (inperfect and random.random() < .9 and len(visited_cell_only) >= 1):
                 neighbor, direction = visited_cell_only[1]
                 self.__remove_wall(cell, neighbor, direction)
-
+            self.__remove_wall(cell, neighbor, direction)
             # mark corrent cell as visisted
             cell.visited = True
 
@@ -113,8 +114,7 @@ class PrimGenerator():
                         cell = self.maze.grid[mr][mc]
                         cell.visited = True
                         cell.is_42 = True
-                        # keep all walls intact so display will block it
-                        # cell.north = True
-                        # cell.south = True
-                        # cell.east = True
-                        # cell.west = True
+    
+    def set_seed(self, seed):
+        if seed:
+            random.seed(seed)

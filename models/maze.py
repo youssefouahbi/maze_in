@@ -18,6 +18,9 @@ class Maze():
         self.stdscr.keypad(True)
         curses.start_color()
         curses.curs_set(0)
+        curses.init_pair(4, curses.COLOR_BLUE, 0)
+        curses.init_pair(5, curses.COLOR_GREEN, 0)
+        curses.init_pair(6, curses.COLOR_YELLOW, 0)
 
     def __del__(self):
         self.close()
@@ -135,8 +138,37 @@ class Maze():
 
             self.stdscr.addstr(r * 2 + 1, 0, line_mid)
             self.stdscr.addstr(r * 2 + 2, 0, line_bot)
+        
+        start_x, start_y = self.entry
+        end_x, end_y = self.exit
+        self.stdscr.addstr(start_y * 2 + 1, start_x * 4 + 2, "██", curses.color_pair(5))
+        self.stdscr.addstr(end_y * 2 + 1, end_x * 4 + 2, "██", curses.color_pair(6))
 
         self.stdscr.refresh()
 
     def get_char(self):
         return self.stdscr.getch()
+
+    # def display_path(self, path: list[tuple]):
+        # self.stdscr.clear()
+        # last_x, last_y = self.exit
+        # last_cell = self.grid[last_y][last_x]
+        # # if last_cell.is_42 is False:
+        for i in range(len(path) - 1):
+            r1, c1 = path[i]
+            r2, c2 = path[i + 1]
+
+            y1 = r1 * 2 + 1
+            x1 = c1 * 4 + 2
+
+            y2 = r2 * 2 + 1
+            x2 = c2 * 4 + 2
+
+            # colorier la cellule
+            self.stdscr.addstr(y1, x1, "██", curses.color_pair(4))
+
+            # colorier le passage entre les cellules
+            mid_y = (y1 + y2) // 2
+            mid_x = (x1 + x2) // 2
+            self.stdscr.addstr(mid_y, mid_x, "██", curses.color_pair(4))
+        # self.stdscr.refresh()

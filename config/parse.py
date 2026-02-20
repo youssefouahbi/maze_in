@@ -27,6 +27,8 @@ def read_config(file_path):
                         config[key] = int(value)
                     except Exception:
                         raise ValueError(f"Ligne {line_num}: valeur de {key} doit être un entier: {value}")
+                    if int(value) < 0:
+                        raise ValueError(f"Ligne {line_num}: valeur de {key} doit être positive: {value}")
 
                 elif key in ['ENTRY', 'EXIT']:
                     try:
@@ -56,7 +58,7 @@ def read_config(file_path):
 # Test rapide
 if __name__ == "__main__":
     try:
-        cfg = read_config("file.txt")
+        cfg = read_config("config.txt")
         print("Configuration lue avec succès :")
         print(cfg)
     except Exception as e:
