@@ -53,19 +53,17 @@ class DFSGenerator:
         time.sleep(.01)
         random.shuffle(neighbors)
 
+        if inperfect and random.random() < .5 and neighbors:
+            if len(neighbors) > 2:
+                cell1, dira = neighbors[-1]
+                self.__remove_wall(cell, cell1, dira)
+
         for (next_cell, direction) in neighbors:
             if not next_cell.visited:
                 self.__remove_wall(cell, next_cell, direction)
                 self._dfs(next_cell, inperfect)
 
-        if inperfect:
-            random.shuffle(neighbors)
-            for (next_cell, direction) in neighbors:
-                if not next_cell.visited:
-                    self.__remove_wall(cell, next_cell, direction)
-                    self._dfs(next_cell, inperfect)
-            
-            
+
     def __remove_wall(self, current, next_cell, direction):    # casser le mure entre 2 cellules
         if direction == "north":
             current.north = False
@@ -79,7 +77,7 @@ class DFSGenerator:
         elif direction == "west":
             current.west = False
             next_cell.east = False
-    
+
     def set_seed(self, seed):
         if seed:
             random.seed(seed)
