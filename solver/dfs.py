@@ -64,7 +64,6 @@ class DFSGenerator:
                 self.__remove_wall(cell, next_cell, direction)
                 self._dfs(next_cell, inperfect)
 
-
     def __remove_wall(self, current, next_cell, direction):    # casser le mure entre 2 cellules
         if direction == "north":
             current.north = False

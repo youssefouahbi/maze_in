@@ -1,6 +1,7 @@
 from models.cell import Cell
 import curses
-
+import random
+import time
 
 class Maze():
     def __init__(self, width, height, entry, exit, perfect):
@@ -9,6 +10,8 @@ class Maze():
         self.entry = entry
         self.exit = exit
         self.perfect = perfect
+        self.path = None
+        self.show_path = True
         self.grid = [[Cell(row, col) for col in range(width)]
                      for row in range(height)]
 
@@ -18,9 +21,10 @@ class Maze():
         self.stdscr.keypad(True)
         curses.start_color()
         curses.curs_set(0)
-        curses.init_pair(4, curses.COLOR_BLUE, 0)
-        curses.init_pair(5, curses.COLOR_GREEN, 0)
+        curses.init_pair(1, curses.COLOR_BLUE, 0)
+        curses.init_pair(2, curses.COLOR_GREEN, 0)
         curses.init_pair(6, curses.COLOR_YELLOW, 0)
+        curses.init_pair(7, curses.COLOR_RED, 0)
 
     def __del__(self):
         self.close()
@@ -93,8 +97,8 @@ class Maze():
         h = self.height
         w = self.width
 
-        needed_h = 2*h + 1
-        needed_w = 4*w + 2
+        needed_h = 2*h + 18
+        needed_w = 4*w + 27
 
         max_h, max_w = self.stdscr.getmaxyx()
 
@@ -107,10 +111,10 @@ class Maze():
             return
 
         # Mur du haut
-
+        color_index = random.randint(6, 7)
         top = "██" * (w * 2 + 1)
-        self.stdscr.addstr(0, 0, top)
-
+        self.stdscr.addstr(0, 0, top, curses.color_pair(color_index))
+        
         for r in range(h):
             line_mid = "██"   # mur gauche
             line_bot = "██"   # coin gauche bas
@@ -135,40 +139,57 @@ class Maze():
 
                 # Coin
                 line_bot += "██"
-
-            self.stdscr.addstr(r * 2 + 1, 0, line_mid)
-            self.stdscr.addstr(r * 2 + 2, 0, line_bot)
+            
+            self.stdscr.addstr(r * 2 + 1, 0, line_mid, curses.color_pair(color_index))
+            self.stdscr.addstr(r * 2 + 2, 0, line_bot, curses.color_pair(color_index))
         
         start_x, start_y = self.entry
         end_x, end_y = self.exit
-        self.stdscr.addstr(start_y * 2 + 1, start_x * 4 + 2, "██", curses.color_pair(5))
-        self.stdscr.addstr(end_y * 2 + 1, end_x * 4 + 2, "██", curses.color_pair(6))
+        self.stdscr.addstr(start_y * 2 + 1, start_x * 4 + 2, "██", curses.color_pair(2))
+        self.stdscr.addstr(end_y * 2 + 1, end_x * 4 + 2, "██", curses.color_pair(2))
+        self.stdscr.addstr(end_y * 2 + 4, end_x - 6 , "1.Genarate maze", curses.COLOR_WHITE)
+        self.stdscr.addstr(end_y * 2 + 5, end_x - 6 , "2.Genarate path", curses.COLOR_WHITE)
+        self.stdscr.addstr(end_y * 2 + 6, end_x - 6 , "3.Break", curses.COLOR_WHITE)
+        self.stdscr.addstr(end_y * 2 + 7, end_x - 6 , "4.Genarate maze and path", curses.COLOR_WHITE)
+        self.stdscr.addstr(end_y * 2 + 8, end_x - 6 , "5.hide / show path", curses.COLOR_WHITE)
 
         self.stdscr.refresh()
 
     def get_char(self):
         return self.stdscr.getch()
 
-    # def display_path(self, path: list[tuple]):
-        # self.stdscr.clear()
-        # last_x, last_y = self.exit
-        # last_cell = self.grid[last_y][last_x]
-        # # if last_cell.is_42 is False:
-        for i in range(len(path) - 1):
-            r1, c1 = path[i]
-            r2, c2 = path[i + 1]
+    def show_hide_path(self):
+        """
+        Display the path in the maze using curses.
+        """
+        if self.show_path:
+            self.show_path = False
+            wall = "██"
+        else:
+            self.show_path = True
+            wall = "  "
 
-            y1 = r1 * 2 + 1
-            x1 = c1 * 4 + 2
+        if not self.path:
+            return
 
-            y2 = r2 * 2 + 1
-            x2 = c2 * 4 + 2
+        # Draw all cells in path
+        for j in range(len(self.path) - 1):
+            r, c = self.path[j+1]
+            y = r * 2 + 1
+            x = c * 4 + 2
+            if j != len(self.path) - 2:
+                self.stdscr.addstr(y, x, wall, curses.color_pair(4))
+        # Draw passages between cells
+        for i in range(len(self.path) - 1):
+            r1, c1 = self.path[i]
+            r2, c2 = self.path[i + 1]
 
-            # colorier la cellule
-            self.stdscr.addstr(y1, x1, "██", curses.color_pair(4))
+            mid_y = (r1 + r2) * 2 // 2 + 1
+            mid_x = (c1 + c2) * 4 // 2 + 2
+            self.stdscr.addstr(mid_y, mid_x, wall, curses.color_pair(4))
+            self.stdscr.refresh()
+            time.sleep(0.05)
+        self.stdscr.refresh()
 
-            # colorier le passage entre les cellules
-            mid_y = (y1 + y2) // 2
-            mid_x = (x1 + x2) // 2
-            self.stdscr.addstr(mid_y, mid_x, "██", curses.color_pair(4))
-        # self.stdscr.refresh()
+    def set_path(self, path):
+        self.path = path

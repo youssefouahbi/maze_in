@@ -5,7 +5,9 @@ import sys
 from solver.prim import PrimGenerator
 from solver.bfs import BFS
 from models.save_hex_maze import genrate_hex_maze
-
+import curses
+# import pudb
+# pudb.set_trace()
 
 def main():
     try:
@@ -32,7 +34,7 @@ def main():
     prim.set_seed(42)
     dfs.set_seed(42)
 
-    algo = "prim"
+    algo = config['ALGO']
     inperfect = True
 
     bfs = BFS(maze)
@@ -40,29 +42,35 @@ def main():
     end = (maze.exit[1], maze.exit[0])
 
     def generate_maze():
-        if algo == "prim":
+        if algo == "PRIM":
             prim.generate(0, 0, inperfect)
-        elif algo == "dfs":
+        elif algo == "DFS":
             dfs.generate(0, 0, inperfect)
         path = bfs.find_path(start, end)
+        maze.set_path(path)
         file.set_map(maze.grid)
         file.set_maze_path(path)
         file.save_map()
 
     def generate_path():
-        bfs.display_path()
+        maze.show_hide_path()
 
     generate_maze()
     generate_path()
-
     while True:
         clicked = maze.get_char()
-        if clicked == 49:
+        if clicked == 49:     # 1
             generate_maze()
-        if clicked == 50:
+        if clicked == 50:    # 2
             generate_path()
-        if clicked == 51:
+        if clicked == 51:   # 3
             break
+        if clicked == 52:    # 4
+            generate_maze()
+            generate_path()
+        if clicked == 53:      # 5
+            maze.show_hide_path()
+
 
     maze.close()
 
