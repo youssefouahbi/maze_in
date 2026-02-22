@@ -1,7 +1,7 @@
 from models.cell import Cell
 import curses
-import random
 import time
+
 
 class Maze():
     def __init__(self, width, height, entry, exit, perfect):
