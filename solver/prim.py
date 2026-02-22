@@ -59,7 +59,7 @@ class PrimGenerator():
                 time.sleep(.01)
 
             # to make it inperfect by opening new cell instead of one
-            if (inperfect and random.random() < .7 and len(visited_cell_only) >= 3):
+            if (not inperfect and random.random() < .7 and len(visited_cell_only) >= 3):
                 neighbor, direction = visited_cell_only[1]
                 self.__remove_wall(cell, neighbor, direction)
             self.__remove_wall(cell, neighbor, direction)

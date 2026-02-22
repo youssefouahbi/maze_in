@@ -54,7 +54,7 @@ class DFSGenerator:
         time.sleep(.01)
         random.shuffle(neighbors)
 
-        if inperfect and random.random() < .5 and neighbors:
+        if not inperfect and random.random() < .5 and neighbors:
             if len(neighbors) > 2:
                 cell1, dira = neighbors[-1]
                 self.__remove_wall(cell, cell1, dira)

@@ -37,7 +37,7 @@ def main():
     dfs.set_seed(42)
 
     algo = config['ALGO']
-    inperfect = True
+    inperfect = config['PERFECT']
 
     bfs = BFS(maze)
     start = (maze.entry[1], maze.entry[0])
@@ -76,8 +76,6 @@ def main():
             maze.display()
         if clicked == 52:    # 4
             break
-            
-
 
     maze.close()
 
