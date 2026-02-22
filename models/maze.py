@@ -21,10 +21,14 @@ class Maze():
         self.stdscr.keypad(True)
         curses.start_color()
         curses.curs_set(0)
-        curses.init_pair(1, curses.COLOR_BLUE, 0)
-        curses.init_pair(2, curses.COLOR_GREEN, 0)
-        curses.init_pair(6, curses.COLOR_YELLOW, 0)
-        curses.init_pair(7, curses.COLOR_RED, 0)
+        curses.init_pair(1, curses.COLOR_BLUE, 0)    #reserved
+        curses.init_pair(3, curses.COLOR_GREEN, 0)     #reserved
+        curses.init_pair(6,  curses.COLOR_YELLOW, 0)      #reserved
+        curses.init_pair(12, curses.COLOR_RED, 0)
+        curses.init_pair(13,  curses.COLOR_WHITE, 0)
+        curses.init_pair(14,  curses.COLOR_CYAN, 0)
+        curses.init_pair(15, curses.COLOR_MAGENTA, 0)
+        self.color_index = 15
 
     def __del__(self):
         self.close()
@@ -111,9 +115,8 @@ class Maze():
             return
 
         # Mur du haut
-        color_index = random.randint(6, 7)
         top = "██" * (w * 2 + 1)
-        self.stdscr.addstr(0, 0, top, curses.color_pair(color_index))
+        self.stdscr.addstr(0, 0, top, curses.color_pair(self.color_index))
         
         for r in range(h):
             line_mid = "██"   # mur gauche
@@ -140,18 +143,18 @@ class Maze():
                 # Coin
                 line_bot += "██"
             
-            self.stdscr.addstr(r * 2 + 1, 0, line_mid, curses.color_pair(color_index))
-            self.stdscr.addstr(r * 2 + 2, 0, line_bot, curses.color_pair(color_index))
+            self.stdscr.addstr(r * 2 + 1, 0, line_mid, curses.color_pair(self.color_index))
+            self.stdscr.addstr(r * 2 + 2, 0, line_bot, curses.color_pair(self.color_index))
         
         start_x, start_y = self.entry
         end_x, end_y = self.exit
-        self.stdscr.addstr(start_y * 2 + 1, start_x * 4 + 2, "██", curses.color_pair(2))
-        self.stdscr.addstr(end_y * 2 + 1, end_x * 4 + 2, "██", curses.color_pair(2))
-        self.stdscr.addstr(end_y * 2 + 4, end_x - 6 , "1.Genarate maze", curses.COLOR_WHITE)
-        self.stdscr.addstr(end_y * 2 + 5, end_x - 6 , "2.Genarate path", curses.COLOR_WHITE)
-        self.stdscr.addstr(end_y * 2 + 6, end_x - 6 , "3.Break", curses.COLOR_WHITE)
-        self.stdscr.addstr(end_y * 2 + 7, end_x - 6 , "4.Genarate maze and path", curses.COLOR_WHITE)
-        self.stdscr.addstr(end_y * 2 + 8, end_x - 6 , "5.hide / show path", curses.COLOR_WHITE)
+        self.stdscr.addstr(start_y * 2 + 1, start_x * 4 + 2, "██", curses.color_pair(3))
+        self.stdscr.addstr(end_y * 2 + 1, end_x * 4 + 2, "██", curses.color_pair(6))
+
+        self.stdscr.addstr(end_y * 2 + 4, end_x - 6 , "1.Genarate maze")
+        self.stdscr.addstr(end_y * 2 + 5, end_x - 6 , "2.hide / show path")
+        self.stdscr.addstr(end_y * 2 + 6, end_x - 6 , "3.Rotate Color")
+        self.stdscr.addstr(end_y * 2 + 7, end_x - 6 , "4.Break")
 
         self.stdscr.refresh()
 
@@ -193,3 +196,10 @@ class Maze():
 
     def set_path(self, path):
         self.path = path
+
+    def set_show_path_flag(self):
+        self.show_path = True
+    
+    def set_color_index(self, color):
+        self.color_index = color
+        

@@ -5,9 +5,11 @@ import sys
 from solver.prim import PrimGenerator
 from solver.bfs import BFS
 from models.save_hex_maze import genrate_hex_maze
-import curses
+import random
+
 # import pudb
 # pudb.set_trace()
+
 
 def main():
     try:
@@ -55,21 +57,26 @@ def main():
     def generate_path():
         maze.show_hide_path()
 
+    def change_color(color):
+        maze.set_color_index(color)
+
     generate_maze()
     generate_path()
     while True:
         clicked = maze.get_char()
         if clicked == 49:     # 1
+            # change_color(int(random.randint(5, 10)))
             generate_maze()
+            maze.set_show_path_flag()
+            generate_path()
         if clicked == 50:    # 2
-            generate_path()
-        if clicked == 51:   # 3
-            break
-        if clicked == 52:    # 4
-            generate_maze()
-            generate_path()
-        if clicked == 53:      # 5
             maze.show_hide_path()
+        if clicked == 51:   # 3
+            change_color(int(random.randint(12, 15)))
+            maze.display()
+        if clicked == 52:    # 4
+            break
+            
 
 
     maze.close()
