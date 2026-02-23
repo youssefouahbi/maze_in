@@ -115,7 +115,7 @@ class PrimGenerator():
                         cell = self.maze.grid[mr][mc]
                         cell.visited = True
                         cell.is_42 = True
-    
+
     def set_seed(self, seed):
         if seed:
             random.seed(seed)

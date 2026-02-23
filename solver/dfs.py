@@ -39,6 +39,7 @@ class DFSGenerator:
                     if 0 <= mr < self.maze.height and 0 <= mc < self.maze.width:
                         cell = self.maze.grid[mr][mc]
                         cell.visited = True
+                        cell.is_42 = True
 
     def generate(self, start_row=0, start_col=0, inperfect=None):
         

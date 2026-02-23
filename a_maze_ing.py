@@ -28,8 +28,8 @@ def main():
 
     file = genrate_hex_maze()
     file.set_save_path("output_maze.txt")
-    # file.set_enter(config["ENTRY"])
-    # file.set_exit(config["EXIT"])
+    file.set_enter(config["ENTRY"])
+    file.set_exit(config["EXIT"])
 
     dfs = DFSGenerator(maze)
     prim = PrimGenerator(maze)
@@ -47,6 +47,9 @@ def main():
         if algo == "PRIM":
             prim.generate(0, 0, inperfect)
         elif algo == "DFS":
+            dfs.apply_mask()
+            maze.display()
+            maze.highlight_42_cells()
             dfs.generate(0, 0, inperfect)
         path = bfs.find_path(start, end)
         maze.set_path(path)
@@ -65,7 +68,6 @@ def main():
     while True:
         clicked = maze.get_char()
         if clicked == 49:     # 1
-            # change_color(int(random.randint(5, 10)))
             generate_maze()
             maze.set_show_path_flag()
             generate_path()
@@ -74,6 +76,8 @@ def main():
         if clicked == 51:   # 3
             change_color(int(random.randint(12, 15)))
             maze.display()
+            maze.show_hide_path()
+            maze.show_hide_path()
         if clicked == 52:    # 4
             break
 

@@ -141,7 +141,17 @@ class Maze():
                     line_bot += "  "
 
                 # Coin
-                line_bot += "██"
+                try:
+                    cell1 = self.grid[r + 1][c]
+                    cell2 = self.grid[r][c + 1]
+                    if (not cell.south and not cell.east
+                            and not cell2.west and not cell2.south
+                            and not cell1.east):
+                        line_bot += "  "
+                    else:
+                        line_bot += "██"
+                except Exception:
+                    line_bot += "██"
             
             self.stdscr.addstr(r * 2 + 1, 0, line_mid, curses.color_pair(self.color_index))
             self.stdscr.addstr(r * 2 + 2, 0, line_bot, curses.color_pair(self.color_index))
@@ -151,15 +161,36 @@ class Maze():
         self.stdscr.addstr(start_y * 2 + 1, start_x * 4 + 2, "██", curses.color_pair(3))
         self.stdscr.addstr(end_y * 2 + 1, end_x * 4 + 2, "██", curses.color_pair(6))
 
-        self.stdscr.addstr(end_y * 2 + 4, end_x - 6 , "1.Genarate maze")
-        self.stdscr.addstr(end_y * 2 + 5, end_x - 6 , "2.hide / show path")
-        self.stdscr.addstr(end_y * 2 + 6, end_x - 6 , "3.Rotate Color")
-        self.stdscr.addstr(end_y * 2 + 7, end_x - 6 , "4.Break")
+        self.stdscr.addstr(h * 2 + 2, 2, "=== A-MAZE-ING ===")
+        self.stdscr.addstr(h * 2 + 3, 2, "1.Genarate maze")
+        self.stdscr.addstr(h * 2 + 4, 2, "2.hide / show path")
+        self.stdscr.addstr(h * 2 + 5, 2, "3.Rotate Color")
+        self.stdscr.addstr(h * 2 + 6, 2, "4.Break")
+        self.stdscr.addstr(h * 2 + 7, 2, "Choice (1-4)?")
 
         self.stdscr.refresh()
+        self.highlight_42_cells()
 
     def get_char(self):
         return self.stdscr.getch()
+
+    def highlight_42_cells(self):
+        for r in range(self.height):
+            for c in range(self.width):
+                cell = self.grid[r][c]
+
+                if cell.is_42:
+                    y = r * 2 + 1
+                    x = c * 4 + 2
+
+                    self.stdscr.addstr(
+                        y,
+                        x,
+                        "██",   # interior of the cell
+                        curses.color_pair(6)  # yellow
+                    )
+
+        self.stdscr.refresh()
 
     def show_hide_path(self):
         """
@@ -190,8 +221,8 @@ class Maze():
             mid_y = (r1 + r2) * 2 // 2 + 1
             mid_x = (c1 + c2) * 4 // 2 + 2
             self.stdscr.addstr(mid_y, mid_x, wall, curses.color_pair(4))
-            self.stdscr.refresh()
-            time.sleep(0.05)
+            # self.stdscr.refresh()
+            # time.sleep(0.05)
         self.stdscr.refresh()
 
     def set_path(self, path):
@@ -199,7 +230,6 @@ class Maze():
 
     def set_show_path_flag(self):
         self.show_path = True
-    
+
     def set_color_index(self, color):
         self.color_index = color
-        
