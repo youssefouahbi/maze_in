@@ -6,6 +6,7 @@ from solver.prim import PrimGenerator
 from solver.bfs import BFS
 from models.save_hex_maze import genrate_hex_maze
 import random
+import curses
 
 # import pudb
 # pudb.set_trace()
@@ -67,6 +68,9 @@ def main():
     generate_path()
     while True:
         clicked = maze.get_char()
+        if clicked == curses.KEY_RESIZE:
+            maze.display()
+            continue
         if clicked == 49:     # 1
             generate_maze()
             maze.set_show_path_flag()

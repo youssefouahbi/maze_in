@@ -170,6 +170,8 @@ class Maze():
 
         self.stdscr.refresh()
         self.highlight_42_cells()
+        self.show_hide_path()
+        self.show_hide_path()
 
     def get_char(self):
         return self.stdscr.getch()
