@@ -100,8 +100,8 @@ class Maze():
         h = self.height
         w = self.width
 
-        needed_h = 2*h + 18
-        needed_w = 4*w + 27
+        needed_h = 2*h + 10
+        needed_w = 4*w + 2
 
         max_h, max_w = self.stdscr.getmaxyx()
 
@@ -158,7 +158,7 @@ class Maze():
         start_x, start_y = self.entry
         end_x, end_y = self.exit
         self.stdscr.addstr(start_y * 2 + 1, start_x * 4 + 2, "██", curses.color_pair(3))
-        self.stdscr.addstr(end_y * 2 + 1, end_x * 4 + 2, "██", curses.color_pair(3))
+        self.stdscr.addstr(end_y * 2 + 1, end_x * 4 + 2, "██", curses.color_pair(6))
 
         self.stdscr.addstr(h * 2 + 2, 2, "=== A-MAZE-ING ===")
         self.stdscr.addstr(h * 2 + 3, 2, "1.Genarate maze")
