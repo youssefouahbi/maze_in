@@ -23,7 +23,8 @@ class genrate_hex_maze:
             file.write(f"\n{self.exit[0]}, {self.exit[1]}")
 
             file.write("\n")
-            file.write(self.__transfaire_path())
+            if self.__transfaire_path():
+                file.write(self.__transfaire_path())
 
     def __transfaire_path(self) -> str:
         path: str = ""

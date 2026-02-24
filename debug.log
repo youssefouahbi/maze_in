@@ -1,0 +1,12 @@
+ERROR:root:Error occurred
+Traceback (most recent call last):
+  File "/home/youahbi/Documents/maze_in/a_maze_ing.py", line 66, in main
+    generate_maze()
+    ~~~~~~~~~~~~~^^
+  File "/home/youahbi/Documents/maze_in/a_maze_ing.py", line 58, in generate_maze
+    file.save_map()
+    ~~~~~~~~~~~~~^^
+  File "/home/youahbi/Documents/maze_in/mazegen/save_hex_maze.py", line 26, in save_map
+    file.write(self.__transfaire_path())
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: write() argument must be str, not None

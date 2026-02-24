@@ -3,9 +3,7 @@ import sys
 import random
 import curses
 from mazegen import Maze, DFSGenerator, read_config, PrimGenerator, BFS, genrate_hex_maze
-
-# import pudb
-# pudb.set_trace()
+import logging
 
 
 def main():
@@ -60,7 +58,6 @@ def main():
 
     def change_color(color):
         maze.set_color_index(color)
-
     generate_maze()
     generate_path()
 
