@@ -1,6 +1,6 @@
 from collections import deque
 import curses
-import time
+
 
 class BFS:
     def __init__(self, maze):

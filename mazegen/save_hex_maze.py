@@ -1,4 +1,4 @@
-from models.cell import Cell
+from mazegen.cell import Cell
 
 
 class genrate_hex_maze:

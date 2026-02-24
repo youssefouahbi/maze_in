@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "mazegen"
+version = "1.0.0"
+description = "Maze project to generage maze!"
+authors = ["youssef khalouk", "badr eddine diyaf"]
+packages = [{ include = "mazegen" }]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[build-system]
+requires = ["poetry-core>=1.5.0"]
+build-backend = "poetry.core.masonry.api"

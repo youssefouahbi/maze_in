@@ -80,9 +80,9 @@ def read_config(file_path):
                 raise ValueError(f"Line {line_num}: {key} cannot be negative")
 
             if key in {"WIDTH", "HEIGHT"}:
-                if value < 3:
+                if value < 10:
                     raise ValueError(
-                        f"Line {line_num}: {key} below minimum (3)"
+                        f"Line {line_num}: {key} below minimum (10)"
                     )
                 if value > 100:
                     raise ValueError(

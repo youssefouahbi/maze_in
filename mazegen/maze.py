@@ -1,6 +1,5 @@
-from models.cell import Cell
+from mazegen.cell import Cell
 import curses
-import time
 
 
 class Maze():
@@ -11,7 +10,7 @@ class Maze():
         self.exit = exit
         self.perfect = perfect
         self.path = None
-        self.show_path = True
+        self.showing_path = True
         self.grid = [[Cell(row, col) for col in range(width)]
                      for row in range(height)]
 
@@ -117,7 +116,7 @@ class Maze():
         # Mur du haut
         top = "██" * (w * 2 + 1)
         self.stdscr.addstr(0, 0, top, curses.color_pair(self.color_index))
-        
+
         for r in range(h):
             line_mid = "██"   # mur gauche
             line_bot = "██"   # coin gauche bas
@@ -155,7 +154,7 @@ class Maze():
             
             self.stdscr.addstr(r * 2 + 1, 0, line_mid, curses.color_pair(self.color_index))
             self.stdscr.addstr(r * 2 + 2, 0, line_bot, curses.color_pair(self.color_index))
-        
+
         start_x, start_y = self.entry
         end_x, end_y = self.exit
         self.stdscr.addstr(start_y * 2 + 1, start_x * 4 + 2, "██", curses.color_pair(3))
@@ -168,12 +167,15 @@ class Maze():
         self.stdscr.addstr(h * 2 + 6, 2, "4.Break")
         self.stdscr.addstr(h * 2 + 7, 2, "Choice (1-4)?")
 
-        self.stdscr.refresh()
         self.highlight_42_cells()
-        self.show_hide_path()
-        self.show_hide_path()
+
+        if self.showing_path:
+            self.show_path()
+        else:
+            self.stdscr.refresh()
 
     def get_char(self):
+
         return self.stdscr.getch()
 
     def highlight_42_cells(self):
@@ -194,17 +196,9 @@ class Maze():
 
         self.stdscr.refresh()
 
-    def show_hide_path(self):
-        """
-        Display the path in the maze using curses.
-        """
-        if self.show_path:
-            self.show_path = False
-            wall = "██"
-        else:
-            self.show_path = True
-            wall = "  "
-
+    def show_path(self):
+        self.showing_path = True
+        wall = "██"
         if not self.path:
             return
 
@@ -227,11 +221,45 @@ class Maze():
             # time.sleep(0.05)
         self.stdscr.refresh()
 
+    def hide_path(self):
+        self.showing_path = False
+        wall = "  "
+        if not self.path:
+            return
+
+        # Draw all cells in path
+        for j in range(len(self.path) - 1):
+            r, c = self.path[j+1]
+            y = r * 2 + 1
+            x = c * 4 + 2
+            if j != len(self.path) - 2:
+                self.stdscr.addstr(y, x, wall, curses.color_pair(4))
+        # Draw passages between cells
+        for i in range(len(self.path) - 1):
+            r1, c1 = self.path[i]
+            r2, c2 = self.path[i + 1]
+
+            mid_y = (r1 + r2) * 2 // 2 + 1
+            mid_x = (c1 + c2) * 4 // 2 + 2
+            self.stdscr.addstr(mid_y, mid_x, wall, curses.color_pair(4))
+            # self.stdscr.refresh()
+            # time.sleep(0.05)
+        self.stdscr.refresh()
+
+    def show_hide_path(self):
+        """
+        Display the path in the maze using curses.
+        """
+        if self.showing_path:
+            self.hide_path()
+        else:
+            self.show_path()
+
     def set_path(self, path):
         self.path = path
 
-    def set_show_path_flag(self):
-        self.show_path = True
-
     def set_color_index(self, color):
         self.color_index = color
+
+    def remove_path(self):
+        self.path = None

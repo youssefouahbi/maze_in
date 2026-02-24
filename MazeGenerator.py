@@ -1,8 +1,5 @@
 from typing import List, Tuple, Optional, Any
-from models.maze import Maze
-from solver.prim import PrimGenerator
-from solver.dfs import DFSGenerator
-from solver.bfs import BFS
+from mazegen import Maze, PrimGenerator, DFSGenerator, BFS
 
 
 class MazeGenerator:

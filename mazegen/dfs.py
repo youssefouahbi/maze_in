@@ -1,6 +1,7 @@
 import random
 import time
 
+
 class DFSGenerator:
     # accéder aux cellules
     # casser les murs
@@ -8,7 +9,7 @@ class DFSGenerator:
     def __init__(self, maze):
         self.maze = maze
         self.apply_mask()
-    
+
     def apply_mask(self):
         self.maze.reset_maze()
         """
@@ -16,14 +17,14 @@ class DFSGenerator:
         1 => cellule bloquée (déjà visitée)
         """
         MASK_42 = [
-            [0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,1,0,0,0,1,1,1,0,0,0],
-            [0,0,1,0,0,0,0,0,1,0,0,0],
-            [0,0,1,1,1,0,1,1,1,0,0,0],
-            [0,0,0,0,1,0,1,0,0,0,0,0],
-            [0,0,0,0,1,0,1,1,1,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0],]
-        
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],]
+
         mh = len(MASK_42)
         mw = len(MASK_42[0])
 
@@ -36,13 +37,13 @@ class DFSGenerator:
                 if MASK_42[r][c] == 1:
                     mr = r + offset_r
                     mc = c + offset_c
-                    if 0 <= mr < self.maze.height and 0 <= mc < self.maze.width:
+                    if (0 <= mr < self.maze.height
+                            and 0 <= mc < self.maze.width):
                         cell = self.maze.grid[mr][mc]
                         cell.visited = True
                         cell.is_42 = True
 
     def generate(self, start_row=0, start_col=0, inperfect=None):
-        
         start = self.maze.get_cell(start_row, start_col)
         if start.visited:
             return

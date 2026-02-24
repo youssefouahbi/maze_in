@@ -1,12 +1,8 @@
-from models.maze import Maze
-from solver.dfs import DFSGenerator
-from config.parse import read_config
+
 import sys
-from solver.prim import PrimGenerator
-from solver.bfs import BFS
-from models.save_hex_maze import genrate_hex_maze
 import random
 import curses
+from mazegen import Maze, DFSGenerator, read_config, PrimGenerator, BFS, genrate_hex_maze
 
 # import pudb
 # pudb.set_trace()
@@ -45,27 +41,29 @@ def main():
     end = (maze.exit[1], maze.exit[0])
 
     def generate_maze():
+        maze.remove_path()
         if algo == "PRIM":
             prim.generate(0, 0, inperfect)
         elif algo == "DFS":
             dfs.apply_mask()
-            maze.display()
-            maze.highlight_42_cells()
             dfs.generate(0, 0, inperfect)
         path = bfs.find_path(start, end)
         maze.set_path(path)
+        maze.display()
+        maze.highlight_42_cells()
         file.set_map(maze.grid)
         file.set_maze_path(path)
         file.save_map()
 
     def generate_path():
-        maze.show_hide_path()
+        maze.show_path()
 
     def change_color(color):
         maze.set_color_index(color)
 
     generate_maze()
     generate_path()
+
     while True:
         clicked = maze.get_char()
         if clicked == curses.KEY_RESIZE:
@@ -73,15 +71,11 @@ def main():
             continue
         if clicked == 49:     # 1
             generate_maze()
-            maze.set_show_path_flag()
-            generate_path()
         if clicked == 50:    # 2
             maze.show_hide_path()
         if clicked == 51:   # 3
             change_color(int(random.randint(12, 15)))
             maze.display()
-            maze.show_hide_path()
-            maze.show_hide_path()
         if clicked == 52:    # 4
             break
 
