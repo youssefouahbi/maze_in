@@ -40,8 +40,6 @@ class BFS:
 
             # Get current cell
             cell = self.maze.get_cell(r, c)
-            if not cell:
-                continue
 
             # Explore neighbors
             for n_cell in self.get_accessible_neighbors(cell):

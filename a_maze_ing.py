@@ -2,7 +2,7 @@
 import sys
 import random
 import curses
-from mazegen.parse_class import ConfigParser
+from mazegen import ConfigParser
 from mazegen import Maze, DFSGenerator, PrimGenerator, BFS, genrate_hex_maze
 
 

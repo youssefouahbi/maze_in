@@ -8,7 +8,7 @@ CONFIG = config.txt
 .PHONY: install run debug clean lint lint-strict
 
 install:
-	pip install -r requirements.txt
+	pip install mypy mazegen.tar.gz
 
 run:
 	$(PYTHON) $(SCRIPT) $(CONFIG)
@@ -17,8 +17,8 @@ debug:
 	$(PYTHON) -m pdb $(SCRIPT) $(CONFIG)
 
 clean:
-	rm -rf __pycache__
-	rm -rf .mypy_cache
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type d -name ".mypy_cache" -exec rm -rf {} +
 
 lint:
 	flake8 .	

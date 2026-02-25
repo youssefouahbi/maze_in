@@ -117,9 +117,9 @@ class Maze():
         max_h, max_w = self.stdscr.getmaxyx()
 
         if needed_h > max_h or needed_w > max_w:
-            self.stdscr.addstr(0, 0, "Fenêtre trop petite !")
-            self.stdscr.addstr(1, 0, f"Taille requise: {needed_h}x{needed_w}")
-            self.stdscr.addstr(2, 0, f"Taille écran:  {max_h}x{max_w}")
+            self.stdscr.addstr(0, 0, "Window To Small !")
+            self.stdscr.addstr(1, 0, f"Required Size: {needed_h}x{needed_w}")
+            self.stdscr.addstr(2, 0, f"Screen Size:  {max_h}x{max_w}")
             self.stdscr.refresh()
             self.stdscr.getch()
             return
