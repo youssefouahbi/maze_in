@@ -1,13 +1,16 @@
 import os
+from typing import Union, Dict, Tuple
+
+ConfigValue = Union[int, bool, str, Tuple[int, int]]
 
 
-def read_config(file_path):
+def read_config(file_path: str) -> Dict[str, ConfigValue]:
     required_keys = {
         'WIDTH', 'HEIGHT', 'ENTRY', 'EXIT',
         'PERFECT', 'SEED', 'ALGO', 'OUTPUT_FILE'
     }
 
-    config = {}
+    config: Dict[str, ConfigValue] = {}
 
     # ==========================
     # FILE VALIDATION
@@ -40,7 +43,8 @@ def read_config(file_path):
         if line.count("=") != 1:
             raise SyntaxError(f"Line {line_num}: invalid '=' usage")
 
-        key, value = line.split("=")
+        key, raw_value = line.split("=")
+        value: ConfigValue = raw_value
 
         # Whitespace in key
         if " " in key:
@@ -50,7 +54,7 @@ def read_config(file_path):
         if key == "":
             raise SyntaxError(f"Line {line_num}: empty key")
 
-        if value == "":
+        if raw_value == "":
             raise SyntaxError(f"Line {line_num}: empty value")
 
         # Unknown key
@@ -68,30 +72,30 @@ def read_config(file_path):
         if key in {"WIDTH", "HEIGHT", "SEED"}:
 
             # Reject float
-            if "." in value:
+            if "." in raw_value:
                 raise ValueError(f"Line {line_num}: {key} must be an integer")
 
             try:
-                value = int(value)
+                int_value = int(raw_value)
             except ValueError:
                 raise ValueError(f"Line {line_num}: {key} must be an integer")
 
-            if value < 0:
+            if int_value < 0:
                 raise ValueError(f"Line {line_num}: {key} cannot be negative")
 
             if key in {"WIDTH", "HEIGHT"}:
-                if value < 10:
+                if int_value < 10:
                     raise ValueError(
                         f"Line {line_num}: {key} below minimum (10)"
                     )
-                if value > 100:
+                if int_value > 100:
                     raise ValueError(
-                        f"Line {line_num}: {key} above maximum (100)"
-                    )
+                        f"Line {line_num}: {key} above maximum (100)")
+            value = int_value
 
         elif key in {"ENTRY", "EXIT"}:
 
-            parts = value.split(",")
+            parts = raw_value.split(",")
 
             if len(parts) != 2:
                 raise SyntaxError(
@@ -115,31 +119,33 @@ def read_config(file_path):
 
         elif key == "PERFECT":
 
-            if value not in {"True", "False"}:
+            if raw_value not in {"True", "False"}:
                 raise ValueError(
                     f"Line {line_num}: PERFECT must be True or False"
                 )
 
-            value = value == "True"
+            value = raw_value == "True"
 
         elif key == "ALGO":
 
-            value = value.upper()
-            if value not in {"DFS", "PRIM"}:
+            algo = raw_value.upper()
+            if algo not in {"DFS", "PRIM"}:
                 raise ValueError(
                     f"Line {line_num}: ALGO must be DFS or PRIM"
                 )
+            value = algo
 
         elif key == "OUTPUT_FILE":
 
-            if not value.endswith(".txt"):
+            if not raw_value.endswith(".txt"):
                 raise ValueError(
                     f"Line {line_num}: OUTPUT_FILE must be a .txt file"
                 )
-            if value.count(" ") >= 1:
+            if raw_value.count(" ") >= 1:
                 raise ValueError(
                     f"Line {line_num}: OUTPUT_FILE contain spaces !"
                 )
+            value = raw_value
 
         config[key] = value
 
@@ -153,33 +159,24 @@ def read_config(file_path):
 
     width = config["WIDTH"]
     height = config["HEIGHT"]
+    entry = config["ENTRY"]
+    exit_ = config["EXIT"]
 
-    en1, en2 = config["ENTRY"]
-    ex1, ex2 = config["EXIT"]
+    assert isinstance(width, int)
+    assert isinstance(height, int)
+    assert isinstance(entry, tuple)
+    assert isinstance(exit_, tuple)
+
+    en1, en2 = entry
+    ex1, ex2 = exit_
 
     if en1 >= width or en2 >= height:
         raise ValueError("out of bound")
     elif ex1 >= width or ex2 >= height:
         raise ValueError("out of bound")
-        
-
-    # if en1 * en2 >= band or ex1 * ex2 >= band:
-    #     raise ValueError("out of bound")
 
     # Bounds check (order independent)
-    if config["ENTRY"] == config["EXIT"]:
+    if entry == exit_:
         raise ValueError("ERROR: ENTRY and EXIT cannot be identical")
 
     return config
-
-
-# ==========================
-# TEST
-# ==========================
-if __name__ == "__main__":
-    try:
-        cfg = read_config("config.txt")
-        print("Configuration valid")
-        print(cfg)
-    except Exception as e:
-        print(e)

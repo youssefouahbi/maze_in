@@ -1,55 +1,55 @@
 
 import random
 import time
+from mazegen.maze import Maze
+from mazegen.cell import Cell
+from typing import List, Tuple, Optional
 
 
 class PrimGenerator():
-    def __init__(self, maze):
-        self.maze = maze
+    def __init__(self, maze: Maze) -> None:
+        self.maze: Maze = maze
         self.apply_mask()
 
-    def generate(self, start_row=0, start_col=0, inperfect=False):
+    def generate(
+            self,
+            start_row: int = 0,
+            start_col: int = 0,
+            inperfect: bool = False) -> None:
         self.maze.reset_maze()
 
-        start = self.maze.get_cell(start_row, start_col)
-        if start.visited:
-            return
+        start: Optional[Cell] = self.maze.get_cell(start_row, start_col)
+        if start:
+            if start.visited:
+                return
         self.prim(start, inperfect)
 
-    def prim(self, start, inperfect=None):
-        # list for adding invisited the neighbers each time
-        frontier = []
-
-        # make the start as visisted
-        start.visited = True
-
-        # getting the naieghbers for the first cell
-        neighbors = self.maze.get_neighbors(start, visited_only=True)
-
-        # append them to the list
+    def prim(
+            self,
+            start: Optional[Cell],
+            inperfect: Optional[bool] = None) -> None:
+        frontier: list[Cell] = []
+        if start:
+            start.visited = True
+        neighbors: List[Tuple[Cell, str]] = \
+            self.maze.get_neighbors(start, visited_only=True)
         for (cell, _) in neighbors:
             frontier.append(cell)
 
-        # loop over the list white not empty
         while frontier:
-            # choose a random cell from the list
             cell = random.choice(frontier)
 
-            # remove that cell fromthe list frontier
             frontier.remove(cell)
 
-            # get the neighbers of that cell the visited and invisited ones
-            cell_neighbors = self.maze.get_neighbors(cell, visited_only=False)
+            cell_neighbors: List[Tuple[Cell, str]] = \
+                self.maze.get_neighbors(cell, visited_only=False)
 
-            # list for getting the visisted cells only and add them
-            visited_cell_only = []
+            visited_cell_only: List[Tuple[Cell, str]] = []
 
             for (neighbor, direction) in cell_neighbors:
                 if neighbor.visited is True and neighbor.is_42 is False:
                     visited_cell_only.append((neighbor, direction))
 
-            # if there is visited neigbers we got a randm one and try to
-            # correct it with the current cell
             if visited_cell_only:
                 random.shuffle(visited_cell_only)
                 new_cell = visited_cell_only[0]
@@ -58,20 +58,23 @@ class PrimGenerator():
                 self.maze.display()
                 time.sleep(.01)
 
-            # to make it inperfect by opening new cell instead of one
-            if (not inperfect and random.random() < .7 and len(visited_cell_only) >= 3):
+            if (not inperfect and random.random() < .7
+                    and len(visited_cell_only) >= 3):
                 neighbor, direction = visited_cell_only[1]
                 self.__remove_wall(cell, neighbor, direction)
             self.__remove_wall(cell, neighbor, direction)
-            # mark corrent cell as visisted
             cell.visited = True
 
-            # try to add the invisidted naibers to the list frontier
             for (n, _) in cell_neighbors:
-                if n.visited is False and n not in frontier and n.is_42 is False:
+                if (n.visited is False and n not in frontier and
+                        n.is_42 is False):
                     frontier.append(n)
 
-    def __remove_wall(self, current, next_cell, direction):
+    def __remove_wall(
+            self,
+            current: Cell,
+            next_cell: Cell,
+            direction: str) -> None:
         if direction == "north":
             current.north = False
             next_cell.south = False
@@ -85,37 +88,36 @@ class PrimGenerator():
             current.west = False
             next_cell.east = False
 
-    def apply_mask(self):
+    def apply_mask(self) -> None:
         """
         mask = matrice de 0/1
         1 => cellule bloquée (déjà visitée)
         """
-        MASK_42 = [
-            [0, 0, 0,0,0,0,0,0,0,0,0,0],
-            [0, 0, 1,0,0,0,1,1,1,0,0,0],
-            [0, 0, 1,0,0,0,0,0,1,0,0,0],
-            [0, 0, 1,1,1,0,1,1,1,0,0,0],
-            [0, 0, 0,0,1,0,1,0,0,0,0,0],
-            [0, 0, 0,0,1,0,1,1,1,0,0,0],
-            [0, 0, 0,0,0,0,0,0,0,0,0,0],]
+        MASK_42: List[List] = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-        mh = len(MASK_42)
-        mw = len(MASK_42[0])
-
-        # On centre la matrice dans le maze
-        offset_r = int((self.maze.height - mh) / 2)
-        offset_c = int((self.maze.width - mw) / 2)
+        mh: int = len(MASK_42)
+        mw: int = len(MASK_42[0])
+        offset_r: int = int((self.maze.height - mh) / 2)
+        offset_c: int = int((self.maze.width - mw) / 2)
 
         for r in range(mh):
             for c in range(mw):
                 if MASK_42[r][c] == 1:
-                    mr = r + offset_r
-                    mc = c + offset_c
-                    if 0 <= mr < self.maze.height and 0 <= mc < self.maze.width:
+                    mr: int = r + offset_r
+                    mc: int = c + offset_c
+                    if (0 <= mr < self.maze.height
+                            and 0 <= mc < self.maze.width):
                         cell = self.maze.grid[mr][mc]
                         cell.visited = True
                         cell.is_42 = True
 
-    def set_seed(self, seed):
+    def set_seed(self, seed: Optional[int]) -> None:
         if seed:
             random.seed(seed)

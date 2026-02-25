@@ -1,15 +1,22 @@
 from mazegen.cell import Cell
+from typing import Optional, Tuple, List
 import curses
 
 
 class Maze():
-    def __init__(self, width, height, entry, exit, perfect):
+    def __init__(
+            self,
+            width: int,
+            height: int,
+            entry: tuple[int, int],
+            exit: tuple[int, int],
+            perfect: bool) -> None:
         self.width = width
         self.height = height
         self.entry = entry
         self.exit = exit
         self.perfect = perfect
-        self.path = None
+        self.path: Optional[List[Tuple[int, int]]] = None
         self.showing_path = True
         self.grid = [[Cell(row, col) for col in range(width)]
                      for row in range(height)]
@@ -20,25 +27,25 @@ class Maze():
         self.stdscr.keypad(True)
         curses.start_color()
         curses.curs_set(0)
-        curses.init_pair(1, curses.COLOR_BLUE, 0)    #reserved
-        curses.init_pair(3, curses.COLOR_GREEN, 0)     #reserved
-        curses.init_pair(6,  curses.COLOR_YELLOW, 0)      #reserved
+        curses.init_pair(1, curses.COLOR_BLUE, 0)    # reserved
+        curses.init_pair(3, curses.COLOR_GREEN, 0)     # reserved
+        curses.init_pair(6,  curses.COLOR_YELLOW, 0)      # reserved
         curses.init_pair(12, curses.COLOR_RED, 0)
         curses.init_pair(13,  curses.COLOR_WHITE, 0)
         curses.init_pair(14,  curses.COLOR_CYAN, 0)
         curses.init_pair(15, curses.COLOR_MAGENTA, 0)
         self.color_index = 15
 
-    def __del__(self):
+    def __del__(self) -> None:
         self.close()
 
-    def close(self):
+    def close(self) -> None:
         self.stdscr.keypad(False)
         curses.echo()
         curses.nocbreak()
         curses.endwin()
 
-    def reset_maze(self):
+    def reset_maze(self) -> None:
         for row in self.grid:
             for cell in row:
                 cell.visited = False
@@ -47,22 +54,26 @@ class Maze():
                 cell.east = True
                 cell.west = True
 
-    def in_bounds(self, row, col):
+    def in_bounds(self, row: int, col: int) -> bool:
         if row >= 0 and row < self.height and col >= 0 and col < self.width:
             return True
         else:
             return False
 
-    def get_cell(self, row, col):
+    def get_cell(self, row: int, col: int) -> Optional[Cell]:
         if not self.in_bounds(row, col):
             return None
         else:
             return self.grid[row][col]
 
-    def get_neighbors(self, cell, visited_only=False):
+    def get_neighbors(
+            self,
+            cell: Optional[Cell],
+            visited_only: bool = False) -> list[tuple[Cell, str]]:
         neighbors = []
-        r = cell.row
-        c = cell.col
+        if cell:
+            r = cell.row
+            c = cell.col
 
         # North
         north = self.get_cell(r - 1, c)
@@ -89,12 +100,12 @@ class Maze():
                 neighbors.append((west, "west"))
         return neighbors
 
-    def reset_visited(self):
+    def reset_visited(self) -> None:
         for row in self.grid:
             for cell in row:
                 cell.visited = False
 
-    def display(self):
+    def display(self) -> None:
         self.stdscr.clear()
 
         h = self.height
@@ -106,7 +117,7 @@ class Maze():
         max_h, max_w = self.stdscr.getmaxyx()
 
         if needed_h > max_h or needed_w > max_w:
-            self.stdscr.addstr(0, 0, "Fenêtre trop petite pour afficher le labyrinthe !")
+            self.stdscr.addstr(0, 0, "Fenêtre trop petite !")
             self.stdscr.addstr(1, 0, f"Taille requise: {needed_h}x{needed_w}")
             self.stdscr.addstr(2, 0, f"Taille écran:  {max_h}x{max_w}")
             self.stdscr.refresh()
@@ -151,14 +162,18 @@ class Maze():
                         line_bot += "██"
                 except Exception:
                     line_bot += "██"
-            
-            self.stdscr.addstr(r * 2 + 1, 0, line_mid, curses.color_pair(self.color_index))
-            self.stdscr.addstr(r * 2 + 2, 0, line_bot, curses.color_pair(self.color_index))
+
+            self.stdscr.addstr(r * 2 + 1, 0,
+                               line_mid, curses.color_pair(self.color_index))
+            self.stdscr.addstr(r * 2 + 2, 0, line_bot,
+                               curses.color_pair(self.color_index))
 
         start_x, start_y = self.entry
         end_x, end_y = self.exit
-        self.stdscr.addstr(start_y * 2 + 1, start_x * 4 + 2, "██", curses.color_pair(3))
-        self.stdscr.addstr(end_y * 2 + 1, end_x * 4 + 2, "██", curses.color_pair(6))
+        self.stdscr.addstr(start_y * 2 + 1, start_x * 4 + 2, "██",
+                           curses.color_pair(3))
+        self.stdscr.addstr(end_y * 2 + 1, end_x * 4 + 2, "██",
+                           curses.color_pair(6))
 
         self.stdscr.addstr(h * 2 + 2, 2, "=== A-MAZE-ING ===")
         self.stdscr.addstr(h * 2 + 3, 2, "1.Genarate maze")
@@ -174,11 +189,11 @@ class Maze():
         else:
             self.stdscr.refresh()
 
-    def get_char(self):
+    def get_char(self) -> int:
 
         return self.stdscr.getch()
 
-    def highlight_42_cells(self):
+    def highlight_42_cells(self) -> None:
         for r in range(self.height):
             for c in range(self.width):
                 cell = self.grid[r][c]
@@ -196,7 +211,7 @@ class Maze():
 
         self.stdscr.refresh()
 
-    def show_path(self):
+    def show_path(self) -> None:
         self.showing_path = True
         wall = "██"
         if not self.path:
@@ -221,7 +236,7 @@ class Maze():
             # time.sleep(0.05)
         self.stdscr.refresh()
 
-    def hide_path(self):
+    def hide_path(self) -> None:
         self.showing_path = False
         wall = "  "
         if not self.path:
@@ -246,20 +261,17 @@ class Maze():
             # time.sleep(0.05)
         self.stdscr.refresh()
 
-    def show_hide_path(self):
-        """
-        Display the path in the maze using curses.
-        """
+    def show_hide_path(self) -> None:
         if self.showing_path:
             self.hide_path()
         else:
             self.show_path()
 
-    def set_path(self, path):
+    def set_path(self, path: List[Tuple[int, int]]) -> None:
         self.path = path
 
-    def set_color_index(self, color):
+    def set_color_index(self, color: int) -> None:
         self.color_index = color
 
-    def remove_path(self):
+    def remove_path(self) -> None:
         self.path = None

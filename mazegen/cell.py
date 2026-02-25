@@ -1,7 +1,12 @@
-
-
 class Cell ():
-    def __init__(self, row, col, north=True, south=True, east=True, west=True):
+    def __init__(
+            self,
+            row: int,
+            col: int,
+            north: bool = True,
+            south: bool = True,
+            east: bool = True,
+            west: bool = True) -> None:
         self.row = row
         self.col = col
         self.north = north
@@ -12,17 +17,7 @@ class Cell ():
         self.is_42 = False
         self.hex: str = "0123456789ABCDEF"
 
-    def has_wall(self, wall) -> bool:
-        if (wall == "north"):
-            return self.north
-        elif (wall == "south"):
-            return self.south
-        elif (wall == "east"):
-            return self.east
-        elif (wall == "west"):
-            return self.west
-
-    def remove_wall(self, wall):
+    def remove_wall(self, wall: str) -> None:
         if (wall == "north"):
             self.north = False
         elif (wall == "south"):
@@ -32,7 +27,7 @@ class Cell ():
         elif (wall == "west"):
             self.west = False
 
-    def mark_visited(self):
+    def mark_visited(self) -> None:
         self.visited = True
 
     def get_hex_value(self) -> str:

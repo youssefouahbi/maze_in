@@ -3,14 +3,14 @@ from mazegen.cell import Cell
 
 class genrate_hex_maze:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.grid: list[list[Cell]] | None = None
         self.path: str = "example.txt"
         self.enter: tuple[int, int] = (0, 0)
         self.exit: tuple[int, int] = (0, 0)
         self.maze_path: list[tuple[int, int]] | None = None
 
-    def save_map(self):
+    def save_map(self) -> None:
         if not self.grid:
             return
 
@@ -29,7 +29,7 @@ class genrate_hex_maze:
     def __transfaire_path(self) -> str:
         path: str = ""
         if not self.maze_path:
-            return
+            return path
         for i in range(len(self.maze_path) - 1):
             x1, y1 = self.maze_path[i]
             x2, y2 = self.maze_path[i + 1]
@@ -47,10 +47,6 @@ class genrate_hex_maze:
                 path += "E"
         return path
 
-
-
-
-
     def set_map(self, grid: list[list[Cell]]) -> None:
         self.grid = grid
 
@@ -60,8 +56,8 @@ class genrate_hex_maze:
     def set_maze_path(self, path: list[tuple[int, int]]) -> None:
         self.maze_path = path
 
-    def set_enter(self, entry: tuple[int, int]):
+    def set_enter(self, entry: tuple[int, int]) -> None:
         self.enter = entry
 
-    def set_exit(self, exit: tuple[int, int]):
+    def set_exit(self, exit: tuple[int, int]) -> None:
         self.exit = exit

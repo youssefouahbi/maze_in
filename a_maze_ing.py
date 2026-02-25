@@ -2,43 +2,43 @@
 import sys
 import random
 import curses
-from mazegen import Maze, DFSGenerator, read_config, PrimGenerator, BFS, genrate_hex_maze
-import logging
+from mazegen.parse_class import ConfigParser
+from mazegen import Maze, DFSGenerator, PrimGenerator, BFS, genrate_hex_maze
 
 
-def main():
+def main() -> None:
     try:
-        config = read_config(sys.argv[1])
+        config = ConfigParser(sys.argv[1])
     except Exception as e:
         eror = f"Erreur config: {e}"
         print(eror)
         return
 
     maze = Maze(
-        config['WIDTH'],
-        config['HEIGHT'],
-        config['ENTRY'],
-        config['EXIT'],
-        config['PERFECT'])
+        width=config.width,
+        height=config.height,
+        entry=config.entry,
+        exit=config.exit,
+        perfect=config.perfect)
 
     file = genrate_hex_maze()
     file.set_save_path("output_maze.txt")
-    file.set_enter(config["ENTRY"])
-    file.set_exit(config["EXIT"])
+    file.set_enter(maze.entry)
+    file.set_exit(maze.exit)
 
     dfs = DFSGenerator(maze)
     prim = PrimGenerator(maze)
-    prim.set_seed(42)
-    dfs.set_seed(42)
+    prim.set_seed(config.seed)
+    dfs.set_seed(config.seed)
 
-    algo = config['ALGO']
-    inperfect = config['PERFECT']
+    algo = config.algo
+    inperfect = config.perfect
 
     bfs = BFS(maze)
     start = (maze.entry[1], maze.entry[0])
     end = (maze.exit[1], maze.exit[0])
 
-    def generate_maze():
+    def generate_maze() -> None:
         maze.remove_path()
         if algo == "PRIM":
             prim.generate(0, 0, inperfect)
@@ -53,10 +53,10 @@ def main():
         file.set_maze_path(path)
         file.save_map()
 
-    def generate_path():
+    def generate_path() -> None:
         maze.show_path()
 
-    def change_color(color):
+    def change_color(color: int) -> None:
         maze.set_color_index(color)
     generate_maze()
     generate_path()
@@ -75,7 +75,6 @@ def main():
             maze.display()
         if clicked == 52:    # 4
             break
-
     maze.close()
 
 
